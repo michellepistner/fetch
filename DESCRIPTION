@@ -1,0 +1,23 @@
+Package: fetch
+Type: Package
+Title: Global Tests for Differential Expression
+Version: 0.1.0
+Author: Michelle P. Nixon
+Maintainer: Michelle P. Nixon <map5672@psu.edu>
+Description: This package runs a global F-test for differential expression.
+    It allows for many hypotheses to be tested at once.
+    Based on the ALDEx framework.
+License: AGPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 2.10)
+Imports:
+    driver,
+    Rfast,
+    ALDEx2,
+    BiocParallel
+RoxygenNote: 7.1.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
