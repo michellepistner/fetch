@@ -1,0 +1,146 @@
+CHANGES IN VERSION 1.11.0
+-------------------------
+
+NEW FEATURES (TPQ)
+
+    o Iterative log-ratio transformation works with all aldex. methods
+    
+        o aldex.r: new "iterate = TRUE" works for any aldex. method
+
+    o New aldex.corr function uses continuous outcome
+    
+        o aldex.corr.r: file with old aldex.corr function was removed
+        
+        o aldex.r: test = "cor" or test = "corr" calls aldex.corr
+        
+        o aldex.r: pass along ... correctly
+        
+    o Add verbose argument to aldex.kw, aldex.glm, aldex.corr
+        
+    o Remove conditions argument
+    
+        o Use clr@conds for aldex.ttest, aldex.kw, aldex.glm, aldex.corr, aldex.effect
+        
+        o aldex.clr: passes along any conditions argument (including matrix)
+        
+        o aldex.r: no longer pass along conditions
+        
+        o new test to verify multi-type clr@conds
+        
+        o old tests updated
+
+CHANGES IN VERSION 1.10.3
+-------------------------
+
+NEW FEATURES (TPQ)
+
+    o New aldex.glm function uses model matrix
+    
+        o aldex.r: test = "kw" calls old aldex.glm, test = "glm" calls new aldex.glm
+        
+        o AllClasses.R: change "conds" slot to accept "ANY" to expect model matrix
+        
+        o clr_function.r: tweak coerce.data to expect model matrix
+        
+            o Note: coerce.data function replaced with fewer lines of code
+            
+        o clr_ttest.r: Roxygenize documentation
+        
+        o clr_glm.r: old aldex.glm function renamed as aldex.kw + Roxygenize documentation
+        
+        o clr_glm-tpq.R: new aldex.glm uses model matrix + Roxygenize documentation
+        
+        o plot.aldex.r: no changes -- not compatible with new aldex.glm
+        
+        o test-aldex.kw.R: update test to reflect changes
+        
+        o ALDEx2_vignette.Rnw: use aldex.kw in vignette
+
+CHANGES IN VERSION 1.10.2
+-------------------------
+
+NEW FEATURES (TPQ)
+
+    o add README for the GitHub repository
+    o let aldex.clr work even when 'conds' is missing
+
+CHANGES IN VERSION 1.10.1
+-------------------------
+
+BUG FIXES
+
+    o fixed a bug whereby the order of samples affected the centering of the data
+
+CHANGES IN VERSION 1.9.2
+-------------------------
+
+NEW FEATURES (JRW, GBG)
+
+    o added ability to auto-choose low variance high relative abundance features as
+    the basis
+    o added new class and generic definitions to get the features used as basis
+    o the getDenom function can be exported
+    o updated documentation for above
+    o version bump
+
+CHANGES IN VERSION 1.8.1
+-------------------------
+
+NEW FEATURES (TPQ)
+
+    o rennovated aldex function
+
+        o new 'test = iterative' uses results of one t-test as 'denom' input to a second
+
+        o large improvements to function documentation
+
+    o rennovated aldex.ttest function
+
+        o "progress bar" tracks progress across Monte-Carlo instances
+
+        o made aldex.ttest function faster (~300% for 10,000 features)
+
+        o now uses Wilcox signed rank test when 'paired.test = TRUE'
+
+    o added aldex.clr method for signature 'matrix'
+
+CHANGES IN VERSION 1.5.2
+-------------------------
+
+NEW FEATURES
+
+    o added ability to choose the basis for the clr: all, iqlr, zero or user-defined.
+    useful when dealing with asymmetric datasets (selex, metagenomics, meta-RNA-seq)
+
+    o updated vignette to show how the basis affects the analysis
+
+    o made BiocParallel the only parallel package for multicore processing
+
+    o made zero-replacement a prior probability rather than a pseudocount
+
+CHANGES IN VERSION 0.99.2
+-------------------------
+
+NEW FEATURES
+
+    o made aldex.clr into a class
+
+    o allowed input of SummarizedExperiment object instead of a reads data frame
+
+    o prioritized use of the BiocParallel package for multicore processing. If
+    BiocParallel is not installed then the parallel package used, if neither
+    packages are installed, then serial processing is used
+
+CHANGES IN VERSION 0.99.1
+-------------------------
+
+NEW FEATURES
+
+    o changed conditional tests for multiprocessor use, defaults to FALSE
+
+CHANGES IN VERSION 0.99.0
+-------------------------
+
+NEW FEATURES
+
+    o first submission to Bioc-devel
