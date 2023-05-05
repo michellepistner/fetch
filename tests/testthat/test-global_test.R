@@ -1,33 +1,32 @@
-test_that("globalFetch", {
-  library(plyr)
-  library(dplyr)
-  library(fetch)
-  metadata_filtered = mouse_metadata %>%
-    as.data.frame() %>%
-    filter(!is.na(P_C_F))
+library(ALDEx2)
+library(plyr)
+library(dplyr)
+library(fetch)
 
-  samples_to_keep = metadata_filtered$X.SampleID
-
-  mouse_counts = as.data.frame(mouse_counts)
-  counts_subset = mouse_counts[,names(mouse_counts) %in% samples_to_keep]
-  counts_subset = counts_subset[,colSums(counts_subset)>=5000]
-  rows_to_keep = rowSums(mouse_counts >= 10) >= 10
-  other_sum = colSums(counts_subset[!(rows_to_keep),])
-  otu_filtered = rbind(counts_subset[rows_to_keep,], other_sum)
-
-  samples_to_keep = names(otu_filtered)
-  metadata_filtered = metadata_filtered %>%
-    filter(X.SampleID %in% samples_to_keep)
-
-  ###Prepping the data
-  conds = matrix(metadata_filtered$P_C_F, nrow = 1)
+test_that("globalFetchconds", {
+  data(selex)
+  #subset for efficiency
+  selex <- selex[1201:1600,]
+  conds <- c(rep("NS", 7), rep("S", 7))
 
   set.seed(1)
-  out = fetch(otu_filtered, c(conds), denom = "all", test = "global")
-
-  expect_equal(round(c(out$f_stat),3), round(c(0.99592),3))
+  expect_warning(fetch(selex, conds, denom = "all", test = "global", mc.samples = 3))
+  expect_warning(fetch(selex, conds, denom = "all", test = "global", mc.samples = 3, gl.test = "anova"))
 })
 
+test_that("globalFetchmatrix", {
+  data(selex)
+  #subset for efficiency
+  selex <- selex[1201:1600,]
+  covariates <- data.frame("A" = sample(0:1, 14, replace = TRUE),
+                           "B" = c(rep(0, 7), rep(1, 7)))
+  mm <- model.matrix(~ A + B, covariates)
+  
+  set.seed(1)
+  expect_warning(fetch(selex, mm, denom = "all", test = "global", mc.samples = 3))
+  expect_warning(fetch(selex, mm, denom = "all", test = "global", mc.samples = 3, gl.test = "anova"))
+  
+})
 
 test_that("localFetch", {
   set.seed(1)

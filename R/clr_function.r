@@ -180,15 +180,21 @@ aldex.clr.function <- function( reads, conds, mc.samples=128, denom="all", verbo
     message("aldex.scaleSim: adjusting samples to reflect scale uncertainty.")
     l2p <- list()
     if(length(gamma) == 1){ ##Add uncertainty around the scale samples
-      lambda <- scale.samples
-      scale.samples <-matrix(ncol = mc.samples)
+      conds_mat <- matrix(conds, nrow = length(p))
+      conds_mat <- apply(conds_mat, 2, FUN = function(vec) as.numeric(as.factor(vec)))
+      conds_mat <- apply(conds_mat, 2, FUN = function(vec) vec - mean(vec))##Centering
+      col_var <- gamma^2/apply(conds_mat, 2, var)
+      scale_samples <- matrix(NA, length(p), mc.samples)
+      
       for(i in 1:length(p)){
-        gm_sample <- log(apply(p[[i]],2,gm))
-        scale_for_sample <- sapply(gm_sample, FUN = function(mu){stats::rlnorm(1, mu, lambda)})
-        l2p[[i]] <- sweep(log2(p[[i]]), 2,  log2(scale_for_sample), "-")
-        scale.samples = rbind(scale.samples, scale_for_sample)
+        geo_means <- log(apply(p[[i]],2,gm))
+        noise <- sapply(col_var, FUN = function(sd){stats::rnorm(mc.samples, 0, sqrt(sd))})
+        noise_mean <- rowMeans(noise)
+        
+        scale_samples[i,] <- geo_means + noise_mean
+        scale_samples <- log2(exp(scale_samples))
+        l2p[[i]] <- sweep(log2(p[[i]]), 2,  scale_samples[i,], "-")
       }
-      scale.samples <- scale.samples[-1,]
     } else if(length(gamma) >1 & is.null(dim(gamma))){ ##Vector case/scale sim + senstitivity
       warning("A vector was supplied for scale.samples. To run a sensitivity analysis, use 'aldex.senAnalysis()'.")
       stop("Please supply a single number or matrix.")

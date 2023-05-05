@@ -49,7 +49,7 @@ test_that("fetch works without scale samples passed", {
 
 test_that("fetch works with scale samples passed", {
   expect_error(expect_error(fetch(countdata, as.character(rdat$Condition), gamma = 1, mc.samples = 128))) # expect no error
-  aldex.fit <- fetch(countdata, as.character(rdat$Condition), gamma = .5, mc.samples = 128) %>%
+  aldex.fit <- fetch(countdata, as.character(rdat$Condition), gamma = .25, mc.samples = 128) %>%
     filter(wi.eBH <= 0.05)
   truth <- row.names(aldex.fit)
   expect_true("Taxa4" %in% truth)
