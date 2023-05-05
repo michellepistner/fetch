@@ -43,8 +43,7 @@
 #'  \code{effect = TRUE}.
 #' @param gamma A positive numeric representing the uncertainty (standard deviation) in the CLR assumption if using scale simulation is desired.
 #'  If \code{NULL} (default), ALDEx2 is run without scale simulation.
-#' @param mu.vec A vector of means to test against for the global test.
-#' @param jitter If needed, what factor to jitter the samples for to calculate the covariance matrix in the global test?
+#' @param gl.test A string. Either "manova" (default) or "anova". Which test do we use to run the tests across samples? "anova" can be useful if there are errors due to a large number of Monte Carlo samples.
 #' @param ... Arguments to embedded method (e.g., \code{glm} or \code{cor.test}).
 #'
 #' @return Returns a number of values that depends on the set of options.
@@ -88,7 +87,8 @@
 #'            test="t", effect=FALSE)
 fetch <- function(reads, conditions, mc.samples=128, test="t", effect=TRUE,
                   include.sample.summary=FALSE, verbose=FALSE,
-                  denom="all", iterate=FALSE, gamma = NULL, ...){
+                  denom="all", iterate=FALSE, gamma = NULL,
+                  gl.test = "manova",...){
 
   if(missing(conditions)) stop("The 'conditions' argument is needed for this analysis.")
 
@@ -101,7 +101,7 @@ fetch <- function(reads, conditions, mc.samples=128, test="t", effect=TRUE,
     message("aldex.global: doing global test")
     samples = getMonteCarloInstances(x)
     matrix_samples = samples_mat(samples)
-    tmp_test = global_test(matrix_samples, conditions)
+    tmp_test = global_test(matrix_samples, conditions, gl.test = gl.test)
     return(tmp_test)
   }else if(test == "t") {
 
